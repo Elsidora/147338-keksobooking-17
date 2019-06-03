@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Элла Сидорова](https://up.htmlacademy.ru/javascript/17/user/147338).
-* Наставник: `Неизвестно`.
+* Наставник: `is not defined`.
 
 ---
 
