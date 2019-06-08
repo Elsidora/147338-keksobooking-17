@@ -1,5 +1,5 @@
 'use strict';
-(function() {
+(function () {
 
   var ordinate = {
     min: 130,
@@ -45,11 +45,11 @@
       };
       adsObjects.push(adObject);
     }
-    console.log(adsObjects);
     return adsObjects;
   }
 
   window.data = {
     getAdsObjects: getAdsObjects
   };
+
 })();

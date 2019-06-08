@@ -1,5 +1,6 @@
 'use strict';
-(function() {
+(function () {
+
   var AD_AMOUNT = 8;
   var mapBlock = document.querySelector('.map');
   mapBlock.classList.remove('map--faded');
@@ -25,13 +26,13 @@
 
   function renderElements(arr, container, createElement) {
     var fragment = document.createDocumentFragment();
-    arr.forEach(function(item) {
+    arr.forEach(function (item) {
       var elemItem = createElement(item);
       fragment.appendChild(elemItem);
     });
-
     container.appendChild(fragment);
   }
+
   var arrObjects = window.data.getAdsObjects(AD_AMOUNT, pinBox);
   renderElements(arrObjects, pinBox, createPin);
 
