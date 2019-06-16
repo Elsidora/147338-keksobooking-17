@@ -11,6 +11,9 @@
 
   var pinBox = mapBlock.querySelector('.map__pins');
 
+  var address = adForm.querySelector('#address');
+
+
   var pinSize = {
     width: 50,
     height: 70
@@ -26,6 +29,20 @@
     return pinElement;
   }
 
+  function getCoordinatesPin() {
+    var coordinatesPin = [];
+    var coordinates = {
+      x: pin.offsetLeft + pinSize.width / 2,
+      y: pin.offsetTop + pinSize.height / 2
+    };
+    coordinatesPin.push(coordinates.x);
+    coordinatesPin.push(coordinates.y);
+
+    return coordinatesPin.join(', ');
+  }
+
+  address.value = getCoordinatesPin();
+
   function onPinClick(evt) {
     evt.preventDefault();
     mapBlock.classList.remove('map--faded');
@@ -33,8 +50,7 @@
     window.util.addAttribute(mapBlock, 'map--faded', fieldsetForm, 'disabled');
     window.util.addAttribute(mapBlock, 'map--faded', selectForm, 'disabled');
     var arrObjects = window.data.getAdsObjects(AD_AMOUNT, pinBox);
-    window.util.renderElements(arrObjects, pinBox, window.pin.createPin);
-
+    window.util.renderElements(arrObjects, pinBox, createPin);
   }
 
   pin.addEventListener('click', onPinClick);

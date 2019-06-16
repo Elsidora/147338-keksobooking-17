@@ -12,11 +12,11 @@
     if (block.classList.contains(blockClass)) {
       elements.forEach(function (item) {
         item.setAttribute(attrElem, attrElem);
-      })
+      });
     } else {
       elements.forEach(function (item) {
         item.removeAttribute(attrElem);
-      })
+      });
     }
   }
 
@@ -24,7 +24,6 @@
   function renderElements(arr, container, createElement) {
     var fragment = document.createDocumentFragment();
     arr.forEach(function (item) {
-      console.log(2);
       var elemItem = createElement(item);
       fragment.appendChild(elemItem);
     });
