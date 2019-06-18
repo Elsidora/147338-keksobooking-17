@@ -51,6 +51,7 @@
     window.util.addAttribute(mapBlock, 'map--faded', selectForm, 'disabled');
     var arrObjects = window.data.getAdsObjects(AD_AMOUNT, pinBox);
     window.util.renderElements(arrObjects, pinBox, createPin);
+    pin.removeEventListener('click', onPinClick);
   }
 
   pin.addEventListener('click', onPinClick);
