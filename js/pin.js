@@ -22,18 +22,20 @@
   };
 
 
-  // window.util.addAttribute(mapBlock, 'map--faded', fieldsetForm, 'disabled');
-  // window.util.addAttribute(mapBlock, 'map--faded', selectForm, 'disabled');
+  function addAttribute(elements, nameAttribute) {
+    elements.forEach(function(item) {
+      item.setAttribute(nameAttribute, nameAttribute)
+    });
+  }
 
+  function removeAttribute(elements, nameAttribute) {
+    elements.forEach(function(item) {
+      item.removeAttribute(nameAttribute);
+    });
+  }
 
-  fieldsetForm.forEach(function(item) {
-    item.setAttribute('disabled', 'disabled');
-  })
-
-  selectForm.forEach(function(item) {
-    item.setAttribute('disabled', 'disabled');
-  })
-
+  addAttribute(fieldsetForm, 'disabled');
+  addAttribute(selectForm, 'disabled');
 
   function createPin(adObject) {
     var pinElement = pinTemplate.cloneNode(true);
@@ -45,11 +47,11 @@
     return pinElement;
   }
 
-  function getCoordinatesPin() {
+  function getCoordinatesPin(pinMarginLeft, pinMarginTop) {
     var pinCoordinates = [];
     var coordinates = {
-      x: pin.offsetLeft + pinSize.width / 2,
-      y: pin.offsetTop + pinSize.height / 2
+      x: pinMarginLeft + pinSize.width / 2,
+      y: pinMarginTop + pinSize.height / 2
     };
     pinCoordinates.push(coordinates.x);
     pinCoordinates.push(coordinates.y);
@@ -57,7 +59,7 @@
     return pinCoordinates.join(', ');
   }
 
-  adForm.address.value = getCoordinatesPin();
+  adForm.address.value = getCoordinatesPin(pin.offsetLeft, pin.offsetTop);
 
   function onMouseDown(evt) {
     evt.preventDefault();
@@ -87,28 +89,14 @@
       if (pinLeft < pinBox.offsetLeft - pinSize.width / 2 || pinLeft > pinBox.offsetWidth - pinSize.width / 2) {
         return;
       }
-      if (pinTop < ordinate.min || pinTop > ordinate.max) {
+      if (pinTop < ordinate.min + pinSize.height / 2 || pinTop > ordinate.max - pinSize.height / 2) {
         return;
       }
 
       pin.style.left = pinLeft + 'px';
       pin.style.top = pinTop + 'px';
 
-      function getCoordinatesPin() {
-        var pinCoordinates = [];
-        var coordinates = {
-          x: pinLeft + pinSize.width / 2,
-          y: pinTop + pinSize.height / 2
-        };
-        pinCoordinates.push(coordinates.x);
-        pinCoordinates.push(coordinates.y);
-
-        return pinCoordinates.join(', ');
-      }
-
-      adForm.address.value = getCoordinatesPin();
-
-
+      adForm.address.value = getCoordinatesPin(pinLeft, pinTop);
     }
 
     // при отпускании мыши перестаем слушать событие движения мыши
@@ -127,23 +115,16 @@
   pin.addEventListener('mousedown', onMouseDown);
 
   function changeCondition() {
-    // evt.preventDefault();
     mapBlock.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    fieldsetForm.forEach(function(item) {
-      item.removeAttribute('disabled');
-    });
-    selectForm.forEach(function(item) {
-      item.removeAttribute('disabled');
-    });
-    // window.util.addAttribute(mapBlock, 'map--faded', fieldsetForm, 'disabled');
-    // window.util.addAttribute(mapBlock, 'map--faded', selectForm, 'disabled');
+
+    removeAttribute(fieldsetForm, 'disabled');
+    removeAttribute(selectForm, 'disabled');
+
     var arrObjects = window.data.getAdsObjects(AD_AMOUNT, pinBox);
     window.util.renderElements(arrObjects, pinBox, createPin);
 
   }
-
-  // pin.addEventListener('click', onPinClick);
 
   window.pin = {
     createPin: createPin
