@@ -23,13 +23,13 @@
 
 
   function addAttribute(elements, nameAttribute) {
-    elements.forEach(function(item) {
-      item.setAttribute(nameAttribute, nameAttribute)
+    elements.forEach(function (item) {
+      item.setAttribute(nameAttribute, nameAttribute);
     });
   }
 
   function removeAttribute(elements, nameAttribute) {
-    elements.forEach(function(item) {
+    elements.forEach(function (item) {
       item.removeAttribute(nameAttribute);
     });
   }
@@ -109,7 +109,7 @@
       document.removeEventListener('mouseup', onMouseUp);
     }
     document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp)
+    document.addEventListener('mouseup', onMouseUp);
   }
 
   pin.addEventListener('mousedown', onMouseDown);

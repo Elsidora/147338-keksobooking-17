@@ -7,6 +7,7 @@
 
   var main = document.querySelector('main');
   var form = main.querySelector('.ad-form');
+
   var timeIn = form.querySelector('#timein');
   var timeOut = form.querySelector('#timeout');
 
@@ -44,6 +45,7 @@
     element.insertAdjacentElement('afterEnd', errorBox);
 
     element.addEventListener('focus', onErrorRemove);
+
     element.addEventListener('blur', onFocusRemove);
   }
 
@@ -56,6 +58,7 @@
 
   function onFocusRemove(evt) {
     onErrorRemove(evt);
+    evt.target.style.border = 'none';
     evt.target.removeEventListener('focus', onErrorRemove);
     evt.target.removeEventListener('blur', onFocusRemove);
   }
@@ -77,7 +80,9 @@
   function changeInputStyle(inputName) {
     inputName.value = '';
     inputName.focus();
+    inputName.style.outline = 'none';
     inputName.style.border = '2px solid red';
+
   }
 
   form.addEventListener('submit', function (evt) {
@@ -91,7 +96,7 @@
         renderError(form.title, 'Количество символов в заголовке объявления не должно быть меньше 30 и больше 100');
         return;
       } else {
-        form.title.style.border = 'none';
+        valid = true;
       }
     }
 
@@ -104,12 +109,11 @@
             renderError(form.price, 'Цена не может быть ниже указанного значения или выше 1000000');
             return;
           } else {
-            form.price.style.border = 'none';
+            valid = true;
           }
         }
       }
     }
-
 
     if (valid) {
       form.submit();
