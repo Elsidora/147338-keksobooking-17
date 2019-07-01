@@ -6,12 +6,18 @@
   };
 
   var main = document.querySelector('main');
+  var mainPin = main.querySelector('.map__pin--main');
   var form = main.querySelector('.ad-form');
+  var fieldsetForm = form.querySelectorAll('fieldset');
 
   var timeIn = form.querySelector('#timein');
   var timeOut = form.querySelector('#timeout');
 
+  var roomNumber = form.querySelector('#room_number');
+  var guestNumber = form.querySelector('#capacity');
+
   var typeHousing = form.querySelector('#type');
+
   var typeHousingMap = {
     'bungalo': {
       min: 0,
@@ -30,6 +36,40 @@
       max: 1000000
     }
   };
+
+  var roomForGuestsMap = {
+    '1': ['1'],
+    '2': ['2', '1'],
+    '3': ['3', '2', '1'],
+    '100': ['0'],
+  };
+
+  var mainPinStartCoords = {
+    x: parseInt(mainPin.style.left, 10) + mainPin.getBoundingClientRect().width / 2,
+    y: parseInt(mainPin.style.top, 10) + mainPin.getBoundingClientRect().height / 2
+  };
+
+  form.address.value = mainPinStartCoords.x + ', ' + mainPinStartCoords.y;
+
+  function disabledForm() {
+    window.util.addAttribute(fieldsetForm, 'disabled');
+  }
+
+  function changeRoomNumberValue(value) {
+    Array.from(guestNumber.options).forEach(function (option) {
+      option.disabled = !roomForGuestsMap[value].includes(option.value);
+    });
+    guestNumber.value = value > 3 ? '0' : value;
+  }
+
+  changeRoomNumberValue(roomNumber.value);
+
+  function onChangeRooms(evt) {
+    changeRoomNumberValue(evt.currentTarget.value);
+  }
+
+  roomNumber.addEventListener('change', onChangeRooms);
+
   var housingTypes = Object.keys(typeHousingMap);
 
   var valid = true;
@@ -63,18 +103,25 @@
     evt.target.removeEventListener('blur', onFocusRemove);
   }
 
-  typeHousing.addEventListener('change', function (evt) {
+  function onChangeType(evt) {
     form.price.placeholder = typeHousingMap[evt.currentTarget.value].min;
-  });
+  }
+  typeHousing.addEventListener('change', onChangeType);
 
-  timeIn.addEventListener('change', function (evt) {
+  function onChangeTimeIn(evt) {
     var timeInCurrentValue = evt.currentTarget.value;
     timeOut.value = timeInCurrentValue;
-  });
+  }
+  timeIn.addEventListener('change', onChangeTimeIn);
 
-  timeOut.addEventListener('change', function (evt) {
+  function onChangeTimeOut(evt) {
     var timeOutCurrentValue = evt.currentTarget.value;
     timeIn.value = timeOutCurrentValue;
+  }
+  timeOut.addEventListener('change', onChangeTimeOut);
+
+  document.addEventListener('pinMoveEvent', function (evt) {
+    form.address.value = evt.coords.x + ', ' + evt.coords.y;
   });
 
   function changeInputStyle(inputName) {
@@ -119,5 +166,9 @@
       form.submit();
     }
   });
+
+  window.form = {
+    disabledForm: disabledForm
+  };
 
 })();
