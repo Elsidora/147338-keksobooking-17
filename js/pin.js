@@ -1,19 +1,13 @@
 'use strict';
 (function () {
   var AD_AMOUNT = 8;
-  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-  var main = document.querySelector('main');
-  var adForm = main.querySelector('.ad-form');
-  var mapBlock = main.querySelector('.map');
-  var pin = mapBlock.querySelector('.map__pin--main');
-  var fieldsetForm = main.querySelectorAll('fieldset');
-  var selectForm = main.querySelectorAll('select');
-
+  var mapBlock = document.querySelector('.map');
+  var mainPin = mapBlock.querySelector('.map__pin--main');
   var pinBox = mapBlock.querySelector('.map__pins');
 
-  var pinSize = {
-    width: 50,
-    height: 70
+  var mainPinSizeDefault = {
+    width: 65,
+    height: 65
   };
 
   var ordinate = {
@@ -21,45 +15,16 @@
     max: 630
   };
 
-
-  function addAttribute(elements, nameAttribute) {
-    elements.forEach(function (item) {
-      item.setAttribute(nameAttribute, nameAttribute);
-    });
-  }
-
-  function removeAttribute(elements, nameAttribute) {
-    elements.forEach(function (item) {
-      item.removeAttribute(nameAttribute);
-    });
-  }
-
-  addAttribute(fieldsetForm, 'disabled');
-  addAttribute(selectForm, 'disabled');
-
-  function createPin(adObject) {
-    var pinElement = pinTemplate.cloneNode(true);
-    var image = pinElement.querySelector('img');
-    pinElement.style.left = adObject.location.x - pinSize.width / 2 + 'px';
-    pinElement.style.top = adObject.location.y + pinSize.height + 'px';
-    image.src = adObject.author.avatar;
-    image.alt = adObject.offer.title;
-    return pinElement;
-  }
-
-  function getCoordinatesPin(pinMarginLeft, pinMarginTop) {
-    var pinCoordinates = [];
-    var coordinates = {
-      x: pinMarginLeft + pinSize.width / 2,
-      y: pinMarginTop + pinSize.height / 2
+  function getCoordinates (pin, pinWidth, pinHeight) {
+    var pinMoveEvent = new Event('pinMoveEvent', {bubbles: true, cancelable: true});
+    pinMoveEvent.coords = {
+      x: pin.offsetLeft + pinWidth,
+      y: pin.offsetTop + pinHeight
     };
-    pinCoordinates.push(coordinates.x);
-    pinCoordinates.push(coordinates.y);
-
-    return pinCoordinates.join(', ');
+    document.dispatchEvent(pinMoveEvent);
   }
 
-  adForm.address.value = getCoordinatesPin(pin.offsetLeft, pin.offsetTop);
+  getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height / 2);
 
   function onMouseDown(evt) {
     evt.preventDefault();
@@ -84,27 +49,31 @@
       var pinBoxTop = pinBox.getBoundingClientRect().top;
 
       var pinLeft = startCoords.x - shift.x - pinBoxLeft;
+
+      console.log(pinLeft);
+
       var pinTop = startCoords.y - shift.y - pinBoxTop;
 
-      if (pinLeft < pinBox.offsetLeft - pinSize.width / 2 || pinLeft > pinBox.offsetWidth - pinSize.width / 2) {
+      if (pinLeft < pinBox.offsetLeft - mainPinSizeDefault.width / 2 || pinLeft > pinBox.offsetWidth - mainPinSizeDefault.width / 2) {
         return;
       }
-      if (pinTop < ordinate.min + pinSize.height / 2 || pinTop > ordinate.max - pinSize.height / 2) {
+      if (pinTop < ordinate.min || pinTop > ordinate.max) {
         return;
       }
 
-      pin.style.left = pinLeft + 'px';
-      pin.style.top = pinTop + 'px';
+      mainPin.style.left = pinLeft + 'px';
+      mainPin.style.top = pinTop + 'px';
 
-      adForm.address.value = getCoordinatesPin(pinLeft, pinTop);
+      if (mapBlock.classList.contains('.map--faded')) {
+        getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height / 2);
+      } else {
+        getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height);
+      }
     }
 
     // при отпускании мыши перестаем слушать событие движения мыши
     function onMouseUp(upEvt) {
       upEvt.preventDefault();
-      if (mapBlock.classList.contains('map--faded')) {
-        changeCondition();
-      }
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     }
@@ -112,21 +81,19 @@
     document.addEventListener('mouseup', onMouseUp);
   }
 
-  pin.addEventListener('mousedown', onMouseDown);
-
-  function changeCondition() {
-    mapBlock.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
-
-    removeAttribute(fieldsetForm, 'disabled');
-    removeAttribute(selectForm, 'disabled');
-
+  function onStartApp() {
+    mainPin.removeEventListener('mouseup', onStartApp);
     var arrObjects = window.data.getAdsObjects(AD_AMOUNT, pinBox);
-    window.util.renderElements(arrObjects, pinBox, createPin);
-
+    window.map.changeCondition();
+    window.map.renderElements(arrObjects, pinBox, window.ad.createPin);
   }
 
   window.pin = {
-    createPin: createPin
+    init: function() {
+      mainPin.addEventListener('mousedown', onMouseDown);
+      mainPin.addEventListener('mouseup', onStartApp);
+    }
   };
+
 })();
+
