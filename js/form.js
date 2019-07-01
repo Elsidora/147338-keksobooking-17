@@ -6,6 +6,7 @@
   };
 
   var main = document.querySelector('main');
+  var mainPin = main.querySelector('.map__pin--main');
   var form = main.querySelector('.ad-form');
   var fieldsetForm = form.querySelectorAll('fieldset');
 
@@ -42,6 +43,13 @@
     '3': ['3', '2', '1'],
     '100': ['0'],
   };
+
+  var mainPinStartCoords = {
+    x: parseInt(mainPin.style.left, 10) + mainPin.getBoundingClientRect().width / 2,
+    y: parseInt(mainPin.style.top, 10) + mainPin.getBoundingClientRect().height / 2
+  };
+
+  form.address.value = mainPinStartCoords.x + ', ' + mainPinStartCoords.y;
 
   function disabledForm() {
     window.util.addAttribute(fieldsetForm, 'disabled');

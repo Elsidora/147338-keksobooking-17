@@ -30,11 +30,11 @@
   }
 
   window.form.disabledForm();
-  window.pin.init();
-
-  window.map = {
-    changeCondition: changeCondition,
-    renderElements: renderElements
-  };
+  window.pin.init(function () {
+    var AD_AMOUNT = 8;
+    var arrObjects = window.data.getAdsObjects(AD_AMOUNT, pinBox);
+    changeCondition();
+    renderElements(arrObjects, pinBox, window.ad.createPin);
+  });
 
 })();

@@ -10,7 +10,7 @@
       if (evt.keyCode === ESC_KEYCODE) {
         cb();
       }
-    }
+    };
   }
 
   function isEnterPress(cb) {
@@ -19,7 +19,7 @@
       if (evt.keyCode === ENTER_KEYCODE) {
         cb();
       }
-    }
+    };
   }
 
 

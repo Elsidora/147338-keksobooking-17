@@ -1,9 +1,10 @@
 'use strict';
 (function () {
-  var AD_AMOUNT = 8;
+
   var mapBlock = document.querySelector('.map');
-  var mainPin = mapBlock.querySelector('.map__pin--main');
   var pinBox = mapBlock.querySelector('.map__pins');
+  var mainPin = pinBox.querySelector('.map__pin--main');
+
 
   var mainPinSizeDefault = {
     width: 65,
@@ -15,7 +16,7 @@
     max: 630
   };
 
-  function getCoordinates (pin, pinWidth, pinHeight) {
+  function getCoordinates(pin, pinWidth, pinHeight) {
     var pinMoveEvent = new Event('pinMoveEvent', {bubbles: true, cancelable: true});
     pinMoveEvent.coords = {
       x: pin.offsetLeft + pinWidth,
@@ -36,6 +37,8 @@
       y: evt.clientY
     };
 
+    getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height / 2);
+
     // обновляем смещение относительно первоначальной точки
     function onMouseMove(moveEvt) {
       evt.preventDefault();
@@ -50,8 +53,6 @@
 
       var pinLeft = startCoords.x - shift.x - pinBoxLeft;
 
-      console.log(pinLeft);
-
       var pinTop = startCoords.y - shift.y - pinBoxTop;
 
       if (pinLeft < pinBox.offsetLeft - mainPinSizeDefault.width / 2 || pinLeft > pinBox.offsetWidth - mainPinSizeDefault.width / 2) {
@@ -64,11 +65,12 @@
       mainPin.style.left = pinLeft + 'px';
       mainPin.style.top = pinTop + 'px';
 
-      if (mapBlock.classList.contains('.map--faded')) {
+      if (mapBlock.classList.contains('map--faded')) {
         getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height / 2);
       } else {
         getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height);
       }
+
     }
 
     // при отпускании мыши перестаем слушать событие движения мыши
@@ -81,16 +83,13 @@
     document.addEventListener('mouseup', onMouseUp);
   }
 
-  function onStartApp() {
-    mainPin.removeEventListener('mouseup', onStartApp);
-    var arrObjects = window.data.getAdsObjects(AD_AMOUNT, pinBox);
-    window.map.changeCondition();
-    window.map.renderElements(arrObjects, pinBox, window.ad.createPin);
-  }
-
   window.pin = {
-    init: function() {
+    init: function (cb) {
       mainPin.addEventListener('mousedown', onMouseDown);
+      function onStartApp() {
+        mainPin.removeEventListener('mouseup', onStartApp);
+        cb();
+      }
       mainPin.addEventListener('mouseup', onStartApp);
     }
   };
