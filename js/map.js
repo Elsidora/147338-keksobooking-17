@@ -3,10 +3,11 @@
 
   var main = document.querySelector('main');
   var mapBlock = main.querySelector('.map');
-  var pinBox = mapBlock.querySelector('.map__pins');
   var adForm = main.querySelector('.ad-form');
   var fieldsetForm = main.querySelectorAll('fieldset');
   var selectForm = main.querySelectorAll('select');
+
+  var mapElems = [];
 
   function changeCondition() {
     mapBlock.classList.remove('map--faded');
@@ -24,17 +25,23 @@
       arr.forEach(function (item) {
         var elemItem = createElement(item);
         fragment.appendChild(elemItem);
+        mapElems.push(elemItem);
       });
       container.appendChild(fragment);
     }
   }
 
-  window.form.disabledForm();
-  window.pin.init(function () {
-    var AD_AMOUNT = 8;
-    var arrObjects = window.data.getAdsObjects(AD_AMOUNT, pinBox);
-    changeCondition();
-    renderElements(arrObjects, pinBox, window.ad.createPin);
-  });
+  function clearMap() {
+    mapElems.forEach(function (item) {
+      item.remove();
+    });
+    mapElems = [];
+  }
+
+  window.map = {
+    changeCondition: changeCondition,
+    renderElements: renderElements,
+    clearMap: clearMap
+  };
 
 })();
