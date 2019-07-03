@@ -6,7 +6,6 @@
   };
 
   var main = document.querySelector('main');
-  var mapBlock = main.querySelector('.map');
   var mainPin = main.querySelector('.map__pin--main');
   var form = main.querySelector('.ad-form');
   var fieldsetForm = form.querySelectorAll('fieldset');

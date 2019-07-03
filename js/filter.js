@@ -4,7 +4,7 @@
   var filtersFormFieldset = filtersForm.querySelectorAll('fieldset');
   var filtersFormSelect = filtersForm.querySelectorAll('select');
 
-  function disabledForm () {
+  function disabledForm() {
     window.util.addAttribute(filtersFormSelect, 'disabled');
     window.util.addAttribute(filtersFormFieldset, 'disabled');
   }
@@ -44,7 +44,7 @@
       }).slice(0, 5);
 
       window.map.clearMap();
-      window.map.renderElements(filteredPins, pinBox, window.ad.createPin)
+      window.map.renderElements(filteredPins, pinBox, window.ad.createPin);
     }
 
   }
