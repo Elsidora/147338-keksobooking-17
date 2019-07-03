@@ -16,16 +16,17 @@
     max: 630
   };
 
-  function getCoordinates(pin, pinWidth, pinHeight) {
+  function getCoordinates() {
     var pinMoveEvent = new Event('pinMoveEvent', {bubbles: true, cancelable: true});
     pinMoveEvent.coords = {
-      x: pin.offsetLeft + pinWidth,
-      y: pin.offsetTop + pinHeight
+      x: mainPin.offsetLeft + mainPin.getBoundingClientRect().width / 2,
+      y: mainPin.offsetTop + mainPin.getBoundingClientRect().height
     };
+    if (mapBlock.classList.contains('map--faded')) {
+      pinMoveEvent.coords.y = mainPin.offsetTop + mainPin.getBoundingClientRect().height / 2;
+    }
     document.dispatchEvent(pinMoveEvent);
   }
-
-  getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height / 2);
 
   function onMouseDown(evt) {
     evt.preventDefault();
@@ -37,7 +38,6 @@
       y: evt.clientY
     };
 
-    getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height / 2);
 
     // обновляем смещение относительно первоначальной точки
     function onMouseMove(moveEvt) {
@@ -65,17 +65,13 @@
       mainPin.style.left = pinLeft + 'px';
       mainPin.style.top = pinTop + 'px';
 
-      if (mapBlock.classList.contains('map--faded')) {
-        getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height / 2);
-      } else {
-        getCoordinates(mainPin, mainPinSizeDefault.width / 2, mainPinSizeDefault.height);
-      }
-
+      getCoordinates();
     }
 
     // при отпускании мыши перестаем слушать событие движения мыши
     function onMouseUp(upEvt) {
       upEvt.preventDefault();
+      getCoordinates();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     }
