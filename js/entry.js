@@ -24,13 +24,14 @@
     // прослушиваем его на документе
     document.addEventListener('loadData', onDataLoad);
   }
-  // по готовности DOM получаем данные с сервера
   function onDataLoad() {
     window.form.disabledForm();
+    window.filter.disabledForm();
     window.pin.init(function () {
       var pinBox = document.querySelector('.map__pins');
       window.map.changeCondition();
-      window.map.renderElements(window.data.get(), pinBox, window.ad.createPin);
+      var pins = window.data.get().slice(0, 5);
+      window.map.renderElements(pins, pinBox, window.ad.createPin);
     });
   }
 
