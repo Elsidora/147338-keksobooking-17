@@ -28,6 +28,8 @@
         mapElems.push(elemItem);
       });
       container.appendChild(fragment);
+    } else {
+      container.parentNode.insertBefore(fragment, container.nextElementSibling);
     }
   }
 

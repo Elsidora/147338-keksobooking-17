@@ -31,7 +31,7 @@
       var pinBox = document.querySelector('.map__pins');
       window.map.changeCondition();
       var pins = window.data.get().slice(0, 5);
-      window.map.renderElements(pins, pinBox, window.ad.createPin);
+      window.map.renderElements(pins, pinBox, window.ad.createAdPin);
     });
   }
 

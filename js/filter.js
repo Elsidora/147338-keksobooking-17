@@ -10,42 +10,38 @@
   }
 
   var filterCriteria = {
-    housingType: []
+    housingType: 'any'
   };
 
   function updateHousingTypeFilter(value) {
-    if (filterCriteria.housingType.includes(value)) {
-      filterCriteria.housingType.splice(filterCriteria.housingType.indexOf(value), 1);
-    } else {
-      filterCriteria.housingType.length = 0;
-      filterCriteria.housingType.push(value);
-    }
+    filterCriteria.housingType = value;
+    return filterCriteria.housingType;
   }
 
   function housingTypeFilter(adObject) {
-    return filterCriteria.housingType.includes(adObject.offer.type);
+    var result = true;
+    if (filterCriteria.housingType !== 'any') {
+      result = filterCriteria.housingType === adObject.offer.type;
+    }
+    return result;
   }
 
   function onChangeFilter(evt) {
     evt.preventDefault();
     var pins = window.data.get();
     var pinBox = document.querySelector('.map__pins');
-    if (evt.target.value === 'any') {
-      var pinsSlice = pins.slice(0, 5);
-      window.map.clearMap();
-      window.map.renderElements(pinsSlice, pinBox, window.ad.createPin);
-      return;
-    }
-    if (evt.target.id === 'housing-type') {
-      updateHousingTypeFilter(evt.target.value);
+    var value = isNaN(evt.target.value) ? evt.target.value : parseInt(evt.target.value, 10);
 
-      var filteredPins = pins.filter(function (pin) {
-        return housingTypeFilter(pin);
-      }).slice(0, 5);
-
-      window.map.clearMap();
-      window.map.renderElements(filteredPins, pinBox, window.ad.createPin);
+    if (evt.target.name === 'housing-type') {
+      updateHousingTypeFilter(value);
     }
+
+    var filteredPins = pins.filter(function (pin) {
+      return housingTypeFilter(pin);
+    }).slice(0, 5);
+
+    window.map.clearMap();
+    window.map.renderElements(filteredPins, pinBox, window.ad.createAdPin);
 
   }
 
