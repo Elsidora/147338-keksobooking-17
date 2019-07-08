@@ -27,7 +27,7 @@
       openAdCurrent();
     }
 
-    function openAdCurrent () {
+    function openAdCurrent() {
       if (adCurrent) {
         adCurrent.remove();
       }
@@ -55,7 +55,7 @@
       document.addEventListener('keydown', onEscPress);
     }
 
-    function closeAdCurrent () {
+    function closeAdCurrent() {
       pinActive.classList.remove('map__pin--active');
       pinActive.blur();
       adCurrent.remove();
