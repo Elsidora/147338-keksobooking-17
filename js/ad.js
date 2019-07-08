@@ -8,8 +8,12 @@
   };
 
   var pinAdTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-
   var cardAdTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var mapBlock = document.querySelector('.map');
+
+  var adCurrent = null;
+  var pinActive = null;
+
 
   function createAdPin(adObject) {
     var pinElement = pinAdTemplate.cloneNode(true);
@@ -18,6 +22,49 @@
     pinElement.style.top = adObject.location.y + 'px';
     image.src = adObject.author.avatar;
     image.alt = adObject.offer.title;
+
+    function onPinClick() {
+      openAdCurrent();
+    }
+
+    function openAdCurrent () {
+      if (adCurrent) {
+        adCurrent.remove();
+      }
+      adCurrent = createAdCard(adObject);
+      if (pinActive) {
+        pinActive.classList.remove('map__pin--active');
+      }
+      pinActive = pinElement;
+      pinActive.classList.add('map__pin--active');
+      mapBlock.lastElementChild.insertAdjacentElement('beforeBegin', adCurrent);
+
+      var adClose = adCurrent.querySelector('.popup__close');
+
+      function onAdCloseClick(evt) {
+        evt.preventDefault();
+        closeAdCurrent();
+        document.removeEventListener('keydown', onEscPress);
+      }
+
+      var onEscPress = window.util.isEscPress(closeAdCurrent);
+      var onCloseCardEnterPress = window.util.isEnterPress(closeAdCurrent);
+
+      adClose.addEventListener('click', onAdCloseClick);
+      adClose.addEventListener('keydown', onCloseCardEnterPress);
+      document.addEventListener('keydown', onEscPress);
+    }
+
+    function closeAdCurrent () {
+      pinActive.classList.remove('map__pin--active');
+      pinActive.blur();
+      adCurrent.remove();
+    }
+
+    var onOpenCardEnterPress = window.util.isEnterPress(openAdCurrent);
+
+    pinElement.addEventListener('click', onPinClick);
+    pinElement.addEventListener('keydown', onOpenCardEnterPress);
 
     return pinElement;
   }
@@ -57,7 +104,6 @@
   }
 
   window.ad = {
-    createAdPin: createAdPin,
-    createAdCard: createAdCard
+    createAdPin: createAdPin
   };
 })();
